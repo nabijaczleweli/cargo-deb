@@ -1,6 +1,6 @@
 ### `[package.metadata.deb.systemd-units]` options
 
-When this table is present in `Cargo.toml` AND `maintainer-scripts` is also specified, correct installation of systemd units will be handled automatically for you.
+When this table is present in `Cargo.toml` AND `maintainer-scripts` is also specified, correct installation of systemd units and tmpfiles and sysusers config files will be handled automatically for you.
 
 This works as follows:
 1. Assets will be added for any matching systemd unit files found in the `unit-scripts` _(see below)_ directory.
@@ -11,7 +11,7 @@ This works as follows:
 
 The exact behaviour can be tuned using the following options:
 
- - **unit-scripts**: Directory containing zero or more [systemd unit files](https://www.freedesktop.org/software/systemd/man/systemd.unit.html) (see below for matching rules) (defaults to the value of the `maintainer-scripts` option).
+ - **unit-scripts**: Directory containing zero or more [systemd unit](https://www.freedesktop.org/software/systemd/man/systemd.unit.html) and config files (see below for matching rules) (defaults to the value of the `maintainer-scripts` option).
  - **unit-name**: Only include systemd unit files for this unit (see below for matching rules).
  - **enable**: Enable the systemd unit on package installation and disable it on package removal (default `true`).
  - **start**: Start the systemd unit on package installation and stop it on package removal (default `true`).
@@ -20,7 +20,7 @@ The exact behaviour can be tuned using the following options:
 
 #### Systemd unit file naming
 
-Systemd unit file names must match one of the following patterns:
+Systemd unit and config file names must match one of the following patterns:
 
  - `<package>.<unit>.<suffix>` - _only if `unit-name` is specified_
  - `<package>.<unit>@.<suffix>` - _only if `unit-name` is specified_
@@ -30,6 +30,12 @@ Systemd unit file names must match one of the following patterns:
  - `<unit>@.<suffix>` - _only if `unit-name` is specified_
 
 Where `<suffix>` is one of: `mount` (@ not supported), `path`, `service`, `socket`, `target`, `timer`, `tmpfile` (@ not supported)
+
+Or one of of the following patterns:
+
+ - `<package>.<suffix>`
+
+Where `<suffix>` is one of: `sysusers`
 
 #### Maintainer script file naming
 
@@ -50,6 +56,7 @@ Where `<script>` is one of: `preinst`, `postinst`, `prerm`, `postrm`.
 
 See:
  - The [dh_installsystemd Ubuntu 20.04 man page](http://manpages.ubuntu.com/manpages/focal/en/man1/dh_installsystemd.1.html)
+ - The [dh_installsysusers man page](https://manpages.debian.org/dh_installsysusers.1)
  - The [systemd documentation](https://www.freedesktop.org/software/systemd/man/systemd.unit.html#Description) for more details on unit naming.
  - The [Debian Policy Manual](https://www.debian.org/doc/debian-policy/ch-maintainerscripts.html) for more information about maintainer scripts.
  - A list of [shell fragments](https://github.com/kornelski/cargo-deb/tree/main/autoscripts) which may be inserted.
